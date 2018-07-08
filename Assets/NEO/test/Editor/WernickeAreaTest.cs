@@ -16,13 +16,14 @@ public class WernickeAreaTest {
 	[Test]
 	public void WernickeAreaTestSimplePasses() {
 		// Use the Assert class to test conditions.
+		Assert.IsTrue(true);
 	}
 
 	[Test]
 	public void WernickeAreaShouldReturnCorrectObjectLocation() {
-		string sentence = "Where is the oven?";
+		string objectName = "oven";
 
-		string location = wernickeArea.DefineObjectLocation (sentence);
+		string location = wernickeArea.DefineObjectLocation (objectName);
 
 		Assert.AreEqual ("kitchen", location);
 	}

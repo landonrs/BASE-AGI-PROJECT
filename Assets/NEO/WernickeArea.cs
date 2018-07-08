@@ -7,7 +7,7 @@ using Mono.Data.Sqlite;
 
 public class WernickeArea {
 
-	private static NeoMemory memory;
+	//private static NeoMemory memory;
 	private static WernickeArea instance;
 	private string connectionString;
 
@@ -16,7 +16,7 @@ public class WernickeArea {
 	public static WernickeArea getInstance(){
 		if (instance == null) {
 			instance = new WernickeArea ();
-			memory = NeoMemory.getInstance ();
+			//memory = NeoMemory.getInstance ();
 		}
 		return instance;
 
@@ -31,16 +31,18 @@ public class WernickeArea {
 	}
 
 	public string DefineObjectLocation(string objectName){
+		int locationId = 0;
+		string locationName = "";
 		using (IDbConnection dbConnection = new SqliteConnection (connectionString)) {
 			dbConnection.Open ();
 
 			using (IDbCommand dbCommand = dbConnection.CreateCommand ()) {
-				string sql = "SELECT " + DBUtils.OBJECTS_LOCATION +
-				" FROM " + DBUtils.OBJECTS_TABLE +
-				" WHERE " + DBUtils.OBJECTS_COL + " = @name";
+				locationId = DBUtils.getId (DBUtils.OBJECTS_LOCATION, DBUtils.OBJECTS_TABLE, DBUtils.OBJECTS_COL, objectName, dbCommand);
+				locationName = DBUtils.getValueFromId (locationId, DBUtils.LOCATIONS_ID, DBUtils.LOCATIONS_TABLE, DBUtils.LOCATIONS_COL, dbCommand);
 			}
+			dbConnection.Close ();
 		}
 				
-		return null;
+		return locationName;
 	}
 }
