@@ -25,6 +25,9 @@ public class DBUtils {
 	//linking tables
 	public static readonly string ADJECTIVE_TYPE_TABLE = "ADJECTIVE_TYPE";
 	public static readonly string OBJECT_DESCRIPTION_TABLE = "OBJECT_DESCRIPTION";
+	public static readonly string OBJECT_DESCRIPTION_ATT_VALUE = "ATTRIBUTE_VALUE";
+	public static readonly string OBJECT_DESC_OBJECT_ID = "OBJECT_ID";
+	public static readonly string OBJECT_DESC_ATTRIBUTE_ID = "ATTRIBUTE_ID";
 	public static readonly string OBJECT_CATEGORIES_TABLE = "OBJECT_CATEGORIES";
 	public static readonly int X_POSITION_ATT_ID = 5;
 	public static readonly int Y_POSITION_ATT_ID = 6;
@@ -85,6 +88,18 @@ public class DBUtils {
 			reader.Close ();
 			return  results;
 		}
+	}
+
+	public static List<string> getObjectAttribute(int objectId, int attributeId, IDbCommand dbCommand) {
+		dbCommand.CommandText = "SELECT "+OBJECT_DESCRIPTION_ATT_VALUE+
+			" FROM "+OBJECT_DESCRIPTION_TABLE+
+			" WHERE "+OBJECT_DESC_ATTRIBUTE_ID+" = @at_id AND " +OBJECT_DESC_OBJECT_ID+" = @ob_id";
+		dbCommand.Parameters.Clear ();
+		dbCommand.Parameters.Add (new SqliteParameter("@at_id", attributeId));
+		dbCommand.Parameters.Add (new SqliteParameter("@ob_id", objectId));
+		List<string> results = readStringResults (dbCommand);
+
+		return results;
 	}
 
 	public static bool ItemExistsInMemory(string item, string colName, string table) {

@@ -38,11 +38,21 @@ public class WernickeAreaTest {
 	}
 
 	[Test]
-	public void WernickeAreaShouldAnalyzeWhereQuesry() {
-		string whereStatement = "where is the nightstand";
+	public void WernickeAreaShouldAnalyzeWhereQuery() {
+		string whereStatement = "where is the bed";
 
 		string location = wernickeArea.AnalyzeSentence (whereStatement);
 
 		Assert.AreEqual ("bedroom", location);
 	}
+
+	[Test]
+	public void WernickeAreaShouldAnalyzeWhatQuery() {
+		string whatStatement = "what color is the nightstand";
+
+		string color = wernickeArea.AnalyzeSentence (whatStatement);
+
+		Assert.AreEqual ("brown", color);
+	}
+
 }
