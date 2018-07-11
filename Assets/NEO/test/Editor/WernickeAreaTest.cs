@@ -28,5 +28,21 @@ public class WernickeAreaTest {
 		Assert.AreEqual ("kitchen", location);
 	}
 
+	[Test]
+	public void WernickeAreaShouldParseObjectFromWhereStatement() {
+		string whereStatement = "where is the nightstand";
 
+		string location = wernickeArea.AnalyzeWhereQuery (whereStatement);
+
+		Assert.AreEqual ("bedroom", location);
+	}
+
+	[Test]
+	public void WernickeAreaShouldAnalyzeWhereQuesry() {
+		string whereStatement = "where is the nightstand";
+
+		string location = wernickeArea.AnalyzeSentence (whereStatement);
+
+		Assert.AreEqual ("bedroom", location);
+	}
 }

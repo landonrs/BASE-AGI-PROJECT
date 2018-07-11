@@ -23,11 +23,15 @@ public class WernickeArea {
 	}
 
 	public string AnalyzeWhereQuery(string sentence){
+		string location = "";
 		string[] words = sentence.Split ();
 		foreach (string word in words){
-
+			//check if word is an object
+			if(DBUtils.ItemExistsInMemory(word, DBUtils.OBJECTS_COL, DBUtils.OBJECTS_TABLE)) {
+				location = DefineObjectLocation(word);
+			}
 		}
-		return null;
+		return location;
 	}
 
 	public string DefineObjectLocation(string objectName){

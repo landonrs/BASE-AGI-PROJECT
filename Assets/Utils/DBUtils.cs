@@ -29,6 +29,8 @@ public class DBUtils {
 	public static readonly int X_POSITION_ATT_ID = 5;
 	public static readonly int Y_POSITION_ATT_ID = 6;
 	public static readonly int LOCATION_ATT_ID = 7;
+	// string for connecting to DB
+	public static readonly string connectionString = "URI=file:" + Application.dataPath + "/neo_brain.db";
 
 	public static int getId(string id_name, string table_name, string col_name, string filter, IDbCommand dbCommand){
 		dbCommand.CommandText = "SELECT "+id_name+" FROM "+table_name+" WHERE "+col_name+" = @filter";
@@ -79,6 +81,57 @@ public class DBUtils {
 			while (reader.Read ()) {
 				//Debug.Log ("id: " + reader.GetInt32 (0));
 				results.Add(reader.GetString(0));
+			}
+			reader.Close ();
+			return  results;
+		}
+	}
+
+	public static bool ItemExistsInMemory(string item, string colName, string table) {
+		List<string> results = null;
+		List<int> idResults = null;
+		int valueID = -1;
+		bool resultsFound = false;
+
+		using (IDbConnection dbConnection = new SqliteConnection(connectionString)) {
+			dbConnection.Open ();
+
+			using (IDbCommand dbCommand = dbConnection.CreateCommand ()) {
+				string command = "SELECT " + colName + " FROM " + table + " WHERE " + colName + " = @item";
+				// if the item is a numeric id, pass it in as the parameter
+				if (int.TryParse (item, out valueID)) {
+					dbCommand.Parameters.Add(new SqliteParameter("@item", valueID));
+				} else {
+					dbCommand.Parameters.Add(new SqliteParameter("@item", item));
+				}
+
+				dbCommand.CommandText = command;
+				if (valueID == 0) {
+					results = DBUtils.readStringResults (dbCommand);
+					if (results.Count != 0) {
+						resultsFound = true;
+					}
+				} else {
+					idResults = ReadIntResults (dbCommand);
+					if (idResults.Count != 0) {
+						resultsFound = true;
+					}
+
+				}
+			}
+			dbConnection.Close ();
+		}
+
+		return resultsFound;
+	}
+
+	private static List<int> ReadIntResults(IDbCommand dbCommand){
+		List<int> results = new List<int> ();
+		using (IDataReader reader = dbCommand.ExecuteReader ()) {
+
+			while (reader.Read ()) {
+				//Debug.Log ("id: " + reader.GetInt32 (0));
+				results.Add(reader.GetInt32(0));
 			}
 			reader.Close ();
 			return  results;
