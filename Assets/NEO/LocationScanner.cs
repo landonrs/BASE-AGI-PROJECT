@@ -6,10 +6,12 @@ public class LocationScanner : MonoBehaviour {
 
 	public string currentLocation;
 	NeoMemory neoBrain;
+	public EntityData person;
 
 	// Use this for initialization
 	void Start () {
 		neoBrain = NeoMemory.getInstance();
+		person = (EntityData) gameObject.GetComponent ("EntityData");
 	}
 	
 	// Update is called once per frame
@@ -24,5 +26,10 @@ public class LocationScanner : MonoBehaviour {
 
 	public void LearnLocation(LocationData data){
 		neoBrain.MemorizeLocation (data);
+	}
+
+	public void UpdateCurrentLocation(LocationData data){
+		neoBrain.UpdatePersonLocation (person.entityName, data.locationName);
+			
 	}
 }

@@ -48,6 +48,9 @@ public class WernickeArea {
 			if(DBUtils.ItemExistsInMemory(word, DBUtils.OBJECTS_COL, DBUtils.OBJECTS_TABLE)) {
 				location = DefineObjectLocation(word);
 			}
+			else if(DBUtils.ItemExistsInMemory(word, DBUtils.PEOPLE_COL, DBUtils.PEOPLE_TABLE)) {
+				location = DefinePersonLocation(word);
+			}
 		}
 		return location;
 	}
@@ -84,6 +87,22 @@ public class WernickeArea {
 			dbConnection.Close ();
 		}
 				
+		return locationName;
+	}
+
+	public string DefinePersonLocation(string personName){
+		int locationId = 0;
+		string locationName = "";
+		using (IDbConnection dbConnection = new SqliteConnection (connectionString)) {
+			dbConnection.Open ();
+
+			using (IDbCommand dbCommand = dbConnection.CreateCommand ()) {
+				locationId = DBUtils.getId (DBUtils.PERSON_LOCATION, DBUtils.PEOPLE_TABLE, DBUtils.PEOPLE_COL, personName, dbCommand);
+				locationName = DBUtils.getValueFromId (locationId, DBUtils.LOCATIONS_ID, DBUtils.LOCATIONS_TABLE, DBUtils.LOCATIONS_COL, dbCommand);
+			}
+			dbConnection.Close ();
+		}
+
 		return locationName;
 	}
 

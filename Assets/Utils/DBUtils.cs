@@ -22,6 +22,10 @@ public class DBUtils {
 	public static readonly string ATTRIBUTES_TABLE = "ATTRIBUTES";
 	public static readonly string ATTRIBUTE_ID = "ATTRIBUTE_ID";
 	public static readonly string ATTRIBUTE_COL = "ATTRIBUTE_NAME";
+	public static readonly string PEOPLE_TABLE = "PEOPLE";
+	public static readonly string PEOPLE_ID = "PERSON_ID";
+	public static readonly string PEOPLE_COL = "PERSON_NAME";
+	public static readonly string PERSON_LOCATION = "PERSON_LOCATION";
 	//linking tables
 	public static readonly string ADJECTIVE_TYPE_TABLE = "ADJECTIVE_TYPE";
 	public static readonly string OBJECT_DESCRIPTION_TABLE = "OBJECT_DESCRIPTION";
@@ -34,6 +38,7 @@ public class DBUtils {
 	public static readonly int LOCATION_ATT_ID = 7;
 	// string for connecting to DB
 	public static readonly string connectionString = "URI=file:" + Application.dataPath + "/neo_brain.db";
+
 
 	public static int getId(string id_name, string table_name, string col_name, string filter, IDbCommand dbCommand){
 		dbCommand.CommandText = "SELECT "+id_name+" FROM "+table_name+" WHERE "+col_name+" = @filter";

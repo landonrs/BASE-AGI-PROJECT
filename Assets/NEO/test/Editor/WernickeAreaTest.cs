@@ -38,6 +38,15 @@ public class WernickeAreaTest {
 	}
 
 	[Test]
+	public void WernickeAreaShouldReturnNeosLocation() {
+		string whereStatement = "where are you";
+
+		string location = wernickeArea.AnalyzeSentence (whereStatement);
+
+		Assert.AreEqual ("main room", location);
+	}
+
+	[Test]
 	public void WernickeAreaShouldAnalyzeWhereQuery() {
 		string whereStatement = "where is the bed";
 
