@@ -10,6 +10,7 @@ public class EntityData : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		//this should come from the gameobject
 		entityName = "you";
 	}
 	

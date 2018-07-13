@@ -24,15 +24,17 @@ public class WernickeArea {
 
 	public string AnalyzeSentence(string sentence) {
 		string response = "";
-		string verb = "";
+		//string verb = "";
 		string[] words = sentence.Split ();
 		foreach (string word in words) {
 			if (word.ToLower ().Equals ("where")) {
 				response = AnalyzeWhereQuery (sentence);
+				//Debug.Log (response);
 				return response;
 			}
 			if (word.ToLower ().Equals ("what")) {
 				response = AnalyzeWhatQuery (sentence);
+				//Debug.Log (response);
 				return response;
 			}
 		}
