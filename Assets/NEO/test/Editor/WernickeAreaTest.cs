@@ -7,6 +7,9 @@ using System.Collections;
 public class WernickeAreaTest {
 
 	WernickeArea wernickeArea;
+	private Vector2 kitchenLocation = new Vector2(17,5);
+	private Vector2 bedroomLocation = new Vector2(17,-6);
+	private Vector2 mainRoomLocation = new Vector2(-6, 0);
 
 	[SetUp]
 	public void setupWernickeArea(){
@@ -37,14 +40,14 @@ public class WernickeAreaTest {
 		Assert.AreEqual ("bedroom", location);
 	}
 
-	[Test]
-	public void WernickeAreaShouldReturnNeosLocation() {
-		string whereStatement = "where are you";
-
-		string location = wernickeArea.AnalyzeSentence (whereStatement);
-
-		Assert.AreEqual ("main room", location);
-	}
+//	[Test]
+//	public void WernickeAreaShouldReturnNeosLocation() {
+//		string whereStatement = "where are you";
+//
+//		string location = wernickeArea.AnalyzeSentence (whereStatement);
+//
+//		Assert.AreEqual ("main room", location);
+//	}
 
 	[Test]
 	public void WernickeAreaShouldAnalyzeWhereQuery() {
@@ -62,6 +65,20 @@ public class WernickeAreaTest {
 		string color = wernickeArea.AnalyzeSentence (whatStatement);
 
 		Assert.AreEqual ("brown", color);
+	}
+
+	[Test]
+	public void WernickeAreaShouldReturnLocationOfRoom() {
+		string goToStatement = "go to the bedroom";
+		Vector2 targetLocation  = wernickeArea.getTargetLocation (goToStatement);
+		Assert.AreEqual (bedroomLocation, targetLocation);
+	}
+
+	[Test]
+	public void WernickeAreaShouldReturnLocationOfRoomNameWithMultipleWords() {
+		string goToStatement = "go to the main room";
+		Vector2 targetLocation  = wernickeArea.getTargetLocation (goToStatement);
+		Assert.AreEqual (mainRoomLocation, targetLocation);
 	}
 
 }

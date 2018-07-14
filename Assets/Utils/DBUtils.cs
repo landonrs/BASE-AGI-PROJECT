@@ -19,6 +19,8 @@ public class DBUtils {
 	public static readonly string LOCATIONS_TABLE = "LOCATIONS";
 	public static readonly string LOCATIONS_ID = "LOCATION_ID";
 	public static readonly string LOCATIONS_COL = "LOCATION_NAME";
+	public static readonly string LOCATION_X = "LOCATION_X";
+	public static readonly string LOCATION_Y = "LOCATION_Y";
 	public static readonly string ATTRIBUTES_TABLE = "ATTRIBUTES";
 	public static readonly string ATTRIBUTE_ID = "ATTRIBUTE_ID";
 	public static readonly string ATTRIBUTE_COL = "ATTRIBUTE_NAME";
@@ -36,6 +38,8 @@ public class DBUtils {
 	public static readonly int X_POSITION_ATT_ID = 5;
 	public static readonly int Y_POSITION_ATT_ID = 6;
 	public static readonly int LOCATION_ATT_ID = 7;
+
+	public static readonly string multiple_word_matcher = " %";
 	// string for connecting to DB
 	public static readonly string connectionString = "URI=file:" + Application.dataPath + "/neo_brain.db";
 
@@ -107,36 +111,35 @@ public class DBUtils {
 		return results;
 	}
 
+	public static Vector2 getLocationCoordinates(string location, IDbCommand dbCommand) {
+		dbCommand.CommandText = "SELECT " + LOCATION_X + ", " + LOCATION_Y +
+		" FROM " + LOCATIONS_TABLE +
+			" WHERE " + LOCATIONS_COL + " = @location OR " + LOCATIONS_COL + " like @location_with_space";
+		dbCommand.Parameters.Clear ();
+		dbCommand.Parameters.Add (new SqliteParameter("@location", location));
+		dbCommand.Parameters.Add (new SqliteParameter("@location_with_space", location + multiple_word_matcher));
+		return readCoordinates (dbCommand);
+	}
+
 	public static bool ItemExistsInMemory(string item, string colName, string table) {
 		List<string> results = null;
-		List<int> idResults = null;
-		int valueID = -1;
 		bool resultsFound = false;
 
 		using (IDbConnection dbConnection = new SqliteConnection(connectionString)) {
 			dbConnection.Open ();
 
 			using (IDbCommand dbCommand = dbConnection.CreateCommand ()) {
-				string command = "SELECT " + colName + " FROM " + table + " WHERE " + colName + " = @item";
-				// if the item is a numeric id, pass it in as the parameter
-				if (int.TryParse (item, out valueID)) {
-					dbCommand.Parameters.Add(new SqliteParameter("@item", valueID));
-				} else {
-					dbCommand.Parameters.Add(new SqliteParameter("@item", item));
-				}
+				string command = "SELECT " + colName +
+				                 " FROM " + table +
+				                 " WHERE " + colName + " = @item OR " + colName + " LIKE @item_with_space";
+				dbCommand.Parameters.Add (new SqliteParameter ("@item", item));
+				// in this case, match any item that starts with the passed in word
+				dbCommand.Parameters.Add (new SqliteParameter ("@item_with_space", item + multiple_word_matcher));
 
 				dbCommand.CommandText = command;
-				if (valueID == 0) {
-					results = DBUtils.readStringResults (dbCommand);
-					if (results.Count != 0) {
-						resultsFound = true;
-					}
-				} else {
-					idResults = ReadIntResults (dbCommand);
-					if (idResults.Count != 0) {
-						resultsFound = true;
-					}
-
+				results = DBUtils.readStringResults (dbCommand);
+				if (results.Count != 0) {
+					resultsFound = true;
 				}
 			}
 			dbConnection.Close ();
@@ -155,6 +158,21 @@ public class DBUtils {
 			}
 			reader.Close ();
 			return  results;
+		}
+	}
+
+	private static Vector2 readCoordinates(IDbCommand dbCommand) {
+		int x = 0;
+		int y = 0;
+		using (IDataReader reader = dbCommand.ExecuteReader ()) {
+
+			while (reader.Read ()) {
+				//Debug.Log ("id: " + reader.GetInt32 (0));
+				x = reader.GetInt32(0);
+				y = reader.GetInt32 (1);
+			}
+			reader.Close ();
+			return  new Vector2(x,y);
 		}
 	}
 }

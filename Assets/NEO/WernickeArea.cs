@@ -10,8 +10,12 @@ public class WernickeArea {
 	//private static NeoMemory memory;
 	private static WernickeArea instance;
 	private string connectionString;
+	private GameObject Neo;
 
-	private WernickeArea(){ connectionString = "URI=file:" + Application.dataPath + "/neo_brain.db";}
+	private WernickeArea(){ 
+		connectionString = "URI=file:" + Application.dataPath + "/neo_brain.db";
+		Neo = GameObject.FindGameObjectWithTag ("NEO");
+	}
 
 	public static WernickeArea getInstance(){
 		if (instance == null) {
@@ -37,9 +41,39 @@ public class WernickeArea {
 				//Debug.Log (response);
 				return response;
 			}
+			if (word.ToLower ().Equals ("go")) {
+				Vector2 targetLocation = getTargetLocation (sentence); 
+				Neo.GetComponent<Navigator>().moveToLocation(targetLocation);
+				//Debug.Log (response);
+				return "Moving to location";
+			}
 		}
 
 		return null;
+	}
+
+	public Vector2 getTargetLocation(string sentence) {
+		string target = "";
+		Vector2 targetLocation = new Vector2();
+		string[] words = sentence.Split ();
+		using (IDbConnection dbConnection = new SqliteConnection (connectionString)) {
+			dbConnection.Open ();
+
+			using (IDbCommand dbCommand = dbConnection.CreateCommand ()) {
+				foreach (string word in words) {
+					//check if word is an object
+					if(WordIsObject(word)) {
+						target = word;
+					}
+					if (WordIsLocation (word)) {
+						targetLocation = DBUtils.getLocationCoordinates (word, dbCommand);
+						break;
+					}
+				}
+			}
+		}
+		return targetLocation;
+
 	}
 
 	public string AnalyzeWhereQuery(string sentence) {
@@ -124,5 +158,37 @@ public class WernickeArea {
 		}
 
 		return attributeValue[0];
+	}
+
+	private bool WordIsObject(string word) {
+		if (DBUtils.ItemExistsInMemory (word.ToLower (), DBUtils.OBJECTS_COL, DBUtils.OBJECTS_TABLE)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool WordIsAttribute(string word) {
+		if(DBUtils.ItemExistsInMemory(word.ToLower(), DBUtils.ATTRIBUTE_COL, DBUtils.ATTRIBUTES_TABLE)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool WordIsLocation(string word) {
+		if(DBUtils.ItemExistsInMemory(word.ToLower(), DBUtils.LOCATIONS_COL, DBUtils.LOCATIONS_TABLE)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool WordIsAdjective(string word) {
+		if(DBUtils.ItemExistsInMemory(word.ToLower(), DBUtils.ADJECTIVES_COL, DBUtils.ADJECTIVES_TABLE)) {
+			return true;
+		}
+
+		return false;
 	}
 }

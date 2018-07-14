@@ -20,12 +20,15 @@ public class LocationScanner : MonoBehaviour {
 	}
 
 	public void NameLocation(string room){
-		Debug.Log("I just entered the: " + room); 
-		this.currentLocation = room;
+		if (!room.Equals(this.currentLocation)) {
+			//Debug.Log("I just entered the: " + room); 
+			this.currentLocation = room;
+		}
 	}
 
 	public void LearnLocation(LocationData data){
 		neoBrain.MemorizeLocation (data);
+		person.entityLocation = data.locationName;
 	}
 
 	public void UpdateCurrentLocation(LocationData data){
