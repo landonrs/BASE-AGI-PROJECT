@@ -18,7 +18,7 @@ public class NeoMemoryTest {
 		neoMemory = NeoMemory.getInstance ();
 		TEST_CONNECTION_STRING = "URI=file:" + Application.dataPath + "/test/neo_brain_test.db";
 		neoMemory.setconnectionString(TEST_CONNECTION_STRING);
-		apple = new ObjectData("apple", "red", new List<string>(new string[]{"fruit", "food"}), 200, 200);
+		apple = new ObjectData("apple", "red", new List<string>(new string[]{"fruit", "food"}), 200, 500);
 	}
 
 
@@ -41,6 +41,15 @@ public class NeoMemoryTest {
 			}
 			dbConnection.Close ();
 		}
+	}
+
+
+	[Test]
+	public void NeoMemoryMemorizesObjectXAndZPositions() {
+		neoMemory.memorizeObject(apple, "kitchen");
+
+		Assert.AreEqual(neoMemory.getObjectDescription("apple")["x_position"], "200");
+		Assert.AreEqual(neoMemory.getObjectDescription("apple")["z_position"], "500");
 	}
 
 
