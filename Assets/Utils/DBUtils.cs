@@ -10,6 +10,8 @@ public class DBUtils {
 	public static readonly string OBJECTS_ID = "OBJECT_ID";
 	public static readonly string OBJECTS_COL = "OBJECT_NAME";
 	public static readonly string OBJECTS_LOCATION = "OBJECT_LOCATION";
+	private const string OBJECT_X_POS = "object_x_position";
+	private const string OBJECT_Z_POS = "object_z_position";
 	public static readonly string ADJECTIVES_TABLE = "ADJECTIVES";
 	public static readonly string ADJECTIVES_ID = "ADJECTIVE_ID";
 	public static readonly string ADJECTIVES_COL = "ADJECTIVE_NAME";
@@ -118,7 +120,7 @@ public class DBUtils {
 		dbCommand.Parameters.Clear ();
 		dbCommand.Parameters.Add (new SqliteParameter("@location", location));
 		dbCommand.Parameters.Add (new SqliteParameter("@location_with_space", location + multiple_word_matcher));
-		return readCoordinates (dbCommand);
+		return readLocationCoordinates (dbCommand);
 	}
 
 	public static bool ItemExistsInMemory(string item, string colName, string table) {
@@ -161,9 +163,10 @@ public class DBUtils {
 		}
 	}
 
-	private static Vector2 readCoordinates(IDbCommand dbCommand) {
+	public static Vector2 readLocationCoordinates(IDbCommand dbCommand) {
 		int x = 0;
 		int y = 0;
+
 		using (IDataReader reader = dbCommand.ExecuteReader ()) {
 
 			while (reader.Read ()) {
@@ -174,5 +177,14 @@ public class DBUtils {
 			reader.Close ();
 			return  new Vector2(x,y);
 		}
+	}
+
+	public static Vector2 getObjectCoordinates(string objName, IDbCommand dbCommand) {
+		dbCommand.CommandText = "SELECT " + OBJECT_X_POS + ", " + OBJECT_Z_POS +
+			" FROM " + OBJECTS_TABLE +
+			" WHERE " + OBJECTS_COL + " = @objName";
+		dbCommand.Parameters.Clear ();
+		dbCommand.Parameters.Add (new SqliteParameter("@objName", objName));
+		return readLocationCoordinates (dbCommand);
 	}
 }

@@ -47,9 +47,13 @@ public class NeoMemoryTest {
 	[Test]
 	public void NeoMemoryMemorizesObjectXAndZPositions() {
 		neoMemory.memorizeObject(apple, "kitchen");
+		using (IDbConnection dbConnection = new SqliteConnection (TEST_CONNECTION_STRING)) {
+			dbConnection.Open ();
+			using (IDbCommand dbCommand = dbConnection.CreateCommand ()) {
+				Assert.AreEqual (DBUtils.getObjectCoordinates ("apple", dbCommand)[0], 200);
+			}
+		}
 
-		Assert.AreEqual(neoMemory.getObjectDescription("apple")["x_position"], "200");
-		Assert.AreEqual(neoMemory.getObjectDescription("apple")["z_position"], "500");
 	}
 
 
