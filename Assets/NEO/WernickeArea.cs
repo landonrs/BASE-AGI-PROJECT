@@ -69,8 +69,9 @@ public class WernickeArea {
 					//check if word is an object
 					if(WordIsObject(word)) {
 						target = word;
+						targetLocation = DBUtils.getObjectCoordinates (target, dbCommand);
 					}
-					if (WordIsLocation (word)) {
+					else if (WordIsLocation (word)) {
 						targetLocation = DBUtils.getLocationCoordinates (word, dbCommand);
 						break;
 					}

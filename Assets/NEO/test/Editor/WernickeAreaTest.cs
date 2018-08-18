@@ -10,6 +10,7 @@ public class WernickeAreaTest {
 	private Vector2 kitchenLocation = new Vector2(17,5);
 	private Vector2 bedroomLocation = new Vector2(17,-6);
 	private Vector2 mainRoomLocation = new Vector2(-6, 0);
+	private Vector2 nightStandLocation = new Vector2(20, -10);
 
 	[SetUp]
 	public void setupWernickeArea(){
@@ -80,6 +81,13 @@ public class WernickeAreaTest {
 		string goToStatement = "go to the main room";
 		Vector2 targetLocation  = wernickeArea.getTargetLocation (goToStatement);
 		Assert.AreEqual (mainRoomLocation, targetLocation);
+	}
+
+	[Test]
+	public void WernickeAreaShouldReturnObjectCoordinates() {
+		string goToStatement = "go to the nightstand";
+		Vector2 targetLocation  = wernickeArea.getTargetLocation (goToStatement);
+		Assert.AreEqual (nightStandLocation, targetLocation);
 	}
 
 }
