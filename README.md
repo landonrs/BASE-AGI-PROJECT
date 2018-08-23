@@ -8,6 +8,33 @@ to determine what words define objects as opposed to adjectives, verbs etc.
 
 This readme outlines the various components that are used in this project and how they can be developed upon. This project is developed using the Unity Engine for the purpose of handling the physics and navigation so the main focus of development can be placed on improving the Agent's ability to respond to commands. 
 
+## Running the program
+This project is built using the Unity Engine. To run this program you must install [Unity from their website](https://unity3d.com/get-unity/download). Once installed you can clone this repo onto your local machine and then open the folder you cloned this repo into in Unity. Once the project is opened select the play button that is located near the center top of your view. This will start the program.
+
+## Using the program
+Once the program is running, you control the observer that is able to move around the house and interact with the Agent(the green cube). you can control your character using the WASD keys and look around using your mouse/touchpad. You can interact with the Agent using the text field that appears on the bottom half of your screen. As of version 1, the Agent responds to the following statements:
+### What Queries: you can ask it what color the objects in the house are (ie what color is the tv)
+### Where Queries: you can ask it where objects are located (ie where is the refridgerator) You can also ask it what room you are standing in with the phrase "where am I" or where it is currently in by asking "where are you".
+### "Go to" commands: You can tell it to go to a room or towards an object (ie go to the kitchen)
+
+You can ask the Agent about any of the objects in the house, as of version 1 those objects are:
+<ul>
+  <li>bed</li>
+  <li>nightstand</li>
+  <li>couch</li>
+  <li>tv</li>
+  <li>oven</li>
+  <li>refridgerator</li>
+  </ul>
+
+and the three rooms in the house are:
+<ul>
+<li>kitchen</li>
+<li>main room</li>
+<li>bedroom</li>
+</ul>
+In order to get a response from the Agent, any query you make about an object must be spelt correctly*(Note that the project does not currently handle punctuation)*. If the object name you type in does not match anything that the Agent has interacted with it will return nothing. If the Agent is able to make a match it will output the answer through the Unity Console.
+
 ## Classes
 This section outlines the classes for this project. This classes are all written in the C# language in order to be compatible with the Unity Engine. 
 
