@@ -34,3 +34,9 @@ Whenever the Agent touches an object, this class pulls the data from the ObjectD
 
 ### Data classes
 These classes store the meta data for objects, locations and entities.
+
+#### EntityData
+This script should be attached to every character in the environment, including the Agent. It gives the agent info about the character(name, location, etc.)
+
+#### ObjectData
+This script should be attached to every object that is in the environment. It gives the Agent info about various attributes of the object(color, name, category, etc.)
