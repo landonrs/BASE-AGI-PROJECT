@@ -14,7 +14,7 @@ This project is built using the Unity Engine. To run this program you must insta
 ## Using the program
 Once the program is running, you control the observer that is able to move around the house and interact with the Agent(the green cube). you can control your character using the WASD keys and look around using your mouse/touchpad. You can interact with the Agent using the text field that appears on the bottom half of your screen. As of version 1, the Agent responds to the following statements:
 ### What Queries: you can ask it what color the objects in the house are (ie what color is the tv)
-### Where Queries: you can ask it where objects are located (ie where is the refridgerator) You can also ask it what room you are standing in with the phrase "where am I" or where it is currently in by asking "where are you".
+### Where Queries: you can ask it where objects are located (ie where is the refrigerator) You can also ask it what room you are standing in with the phrase "where am I" or where it is currently in by asking "where are you".
 ### "Go to" commands: You can tell it to go to a room or towards an object (ie go to the kitchen)
 
 You can ask the Agent about any of the objects in the house, as of version 1 those objects are:
@@ -24,7 +24,7 @@ You can ask the Agent about any of the objects in the house, as of version 1 tho
   <li>couch</li>
   <li>tv</li>
   <li>oven</li>
-  <li>refridgerator</li>
+  <li>refrigerator</li>
   </ul>
 
 and the three rooms in the house are:
@@ -63,7 +63,15 @@ Whenever the Agent touches an object, this class pulls the data from the ObjectD
 These classes store the meta data for objects, locations and entities.
 
 #### EntityData
-This script should be attached to every character in the environment, including the Agent. It gives the agent info about the character(name, location, etc.)
+This script should be attached to every character in the environment, including the Agent and the observer. It gives the agent info about each character(name, location, etc.)
 
 #### ObjectData
 This script should be attached to every object that is in the environment. It gives the Agent info about various attributes of the object(color, name, category, etc.)
+
+#### LocationData
+This script must be attached to every room boundary object in the house. It lets the agent know where its location is so when it interacts with objects, it is able to remember the location that it found the object in.
+
+### Unit Tests classes
+Unit test classes have been added for several of the classes in order to quickly validate that the code functions as intended. These classes rely on mock DB files that contain a copy of the actual DB schema. If any modifications are made to the schema, it will need to be reflected in the test DBs as well.
+
+
