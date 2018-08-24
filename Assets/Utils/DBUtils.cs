@@ -43,14 +43,28 @@ public class DBUtils {
 
 	public static readonly string multiple_word_matcher = " %";
 	// string for connecting to DB
-	public static readonly string connectionString = "URI=file:" + Application.dataPath + "/neo_brain.db";
+	private static string connectionString = "URI=file:" + Application.dataPath + "/neo_brain.db";
 
 
-	public static int getId(string id_name, string table_name, string col_name, string filter, IDbCommand dbCommand){
-		dbCommand.CommandText = "SELECT "+id_name+" FROM "+table_name+" WHERE "+col_name+" = @filter";
-		dbCommand.Parameters.Clear ();
-		dbCommand.Parameters.Add (new SqliteParameter("@filter", filter));
-		return readId (dbCommand);
+	public static int getId(string id_name, string table_name, string col_name, string filter){
+		using (IDbConnection dbConnection = new SqliteConnection (getConnectionString ())) {
+			dbConnection.Open ();
+			using (IDbCommand dbCommand = dbConnection.CreateCommand ()) {
+				dbCommand.CommandText = "SELECT " + id_name + " FROM " + table_name + " WHERE " + col_name + " = @filter";
+				dbCommand.Parameters.Clear ();
+				dbCommand.Parameters.Add (new SqliteParameter ("@filter", filter));
+				return readId (dbCommand);
+			}
+		}
+	}
+
+
+	public static string getConnectionString() {
+		return connectionString;
+	}
+
+	public static void setConnectionString(string dbConString) {
+		connectionString = dbConString;
 	}
 
 	public static int readId(IDbCommand dbCommand){
@@ -80,11 +94,18 @@ public class DBUtils {
 		}
 	}
 
-	public static string getValueFromId(int id, string id_col, string table_name, string col_name, IDbCommand dbCommand){
-		dbCommand.CommandText = "SELECT "+col_name+" FROM "+table_name+" WHERE "+id_col+" = @id";
-		dbCommand.Parameters.Clear ();
-		dbCommand.Parameters.Add (new SqliteParameter("@id", id));
-		List<string> results = readStringResults (dbCommand);
+	public static string getValueFromId(int id, string id_col, string table_name, string col_name){
+		List<string> results = new List<string> ();
+		using (IDbConnection dbConnection = new SqliteConnection (getConnectionString())) {
+			dbConnection.Open ();
+			using (IDbCommand dbCommand = dbConnection.CreateCommand ()) {
+				dbCommand.CommandText = "SELECT " + col_name + " FROM " + table_name + " WHERE " + id_col + " = @id";
+				dbCommand.Parameters.Clear ();
+				dbCommand.Parameters.Add (new SqliteParameter ("@id", id));
+				results = readStringResults (dbCommand);
+			}
+
+		}
 		return results[0];
 	}
 
@@ -101,33 +122,44 @@ public class DBUtils {
 		}
 	}
 
-	public static List<string> getObjectAttribute(int objectId, int attributeId, IDbCommand dbCommand) {
-		dbCommand.CommandText = "SELECT "+OBJECT_DESCRIPTION_ATT_VALUE+
-			" FROM "+OBJECT_DESCRIPTION_TABLE+
-			" WHERE "+OBJECT_DESC_ATTRIBUTE_ID+" = @at_id AND " +OBJECT_DESC_OBJECT_ID+" = @ob_id";
-		dbCommand.Parameters.Clear ();
-		dbCommand.Parameters.Add (new SqliteParameter("@at_id", attributeId));
-		dbCommand.Parameters.Add (new SqliteParameter("@ob_id", objectId));
-		List<string> results = readStringResults (dbCommand);
+	public static List<string> getObjectAttribute(int objectId, int attributeId) {
+		List<string> results = new List<string> ();
+		using (IDbConnection dbConnection = new SqliteConnection (getConnectionString())) {
+			dbConnection.Open ();
+			using (IDbCommand dbCommand = dbConnection.CreateCommand ()) {
+				dbCommand.CommandText = "SELECT "+OBJECT_DESCRIPTION_ATT_VALUE+
+					" FROM "+OBJECT_DESCRIPTION_TABLE+
+					" WHERE "+OBJECT_DESC_ATTRIBUTE_ID+" = @at_id AND " +OBJECT_DESC_OBJECT_ID+" = @ob_id";
+				dbCommand.Parameters.Clear ();
+				dbCommand.Parameters.Add (new SqliteParameter("@at_id", attributeId));
+				dbCommand.Parameters.Add (new SqliteParameter("@ob_id", objectId));
+				results = readStringResults (dbCommand);
+			}
+		}
 
 		return results;
 	}
 
-	public static Vector2 getLocationCoordinates(string location, IDbCommand dbCommand) {
-		dbCommand.CommandText = "SELECT " + LOCATION_X + ", " + LOCATION_Y +
-		" FROM " + LOCATIONS_TABLE +
-			" WHERE " + LOCATIONS_COL + " = @location OR " + LOCATIONS_COL + " like @location_with_space";
-		dbCommand.Parameters.Clear ();
-		dbCommand.Parameters.Add (new SqliteParameter("@location", location));
-		dbCommand.Parameters.Add (new SqliteParameter("@location_with_space", location + multiple_word_matcher));
-		return readLocationCoordinates (dbCommand);
+	public static Vector2 getLocationCoordinates(string location) {
+		using (IDbConnection dbConnection = new SqliteConnection (getConnectionString ())) {
+			dbConnection.Open ();
+			using (IDbCommand dbCommand = dbConnection.CreateCommand ()) {
+				dbCommand.CommandText = "SELECT " + LOCATION_X + ", " + LOCATION_Y +
+				" FROM " + LOCATIONS_TABLE +
+				" WHERE " + LOCATIONS_COL + " = @location OR " + LOCATIONS_COL + " like @location_with_space";
+				dbCommand.Parameters.Clear ();
+				dbCommand.Parameters.Add (new SqliteParameter ("@location", location));
+				dbCommand.Parameters.Add (new SqliteParameter ("@location_with_space", location + multiple_word_matcher));
+				return readLocationCoordinates (dbCommand);
+			}
+		}
 	}
 
 	public static bool ItemExistsInMemory(string item, string colName, string table) {
 		List<string> results = null;
 		bool resultsFound = false;
 
-		using (IDbConnection dbConnection = new SqliteConnection(connectionString)) {
+		using (IDbConnection dbConnection = new SqliteConnection(getConnectionString())) {
 			dbConnection.Open ();
 
 			using (IDbCommand dbCommand = dbConnection.CreateCommand ()) {
@@ -179,12 +211,18 @@ public class DBUtils {
 		}
 	}
 
-	public static Vector2 getObjectCoordinates(string objName, IDbCommand dbCommand) {
-		dbCommand.CommandText = "SELECT " + OBJECT_X_POS + ", " + OBJECT_Z_POS +
-			" FROM " + OBJECTS_TABLE +
-			" WHERE " + OBJECTS_COL + " = @objName";
-		dbCommand.Parameters.Clear ();
-		dbCommand.Parameters.Add (new SqliteParameter("@objName", objName));
-		return readLocationCoordinates (dbCommand);
+	public static Vector2 getObjectCoordinates(string objName) {
+		using (IDbConnection dbConnection = new SqliteConnection (getConnectionString())) {
+			dbConnection.Open ();
+
+			using (IDbCommand dbCommand = dbConnection.CreateCommand ()) {
+				dbCommand.CommandText = "SELECT " + OBJECT_X_POS + ", " + OBJECT_Z_POS +
+				" FROM " + OBJECTS_TABLE +
+				" WHERE " + OBJECTS_COL + " = @objName";
+				dbCommand.Parameters.Clear ();
+				dbCommand.Parameters.Add (new SqliteParameter ("@objName", objName));
+				return readLocationCoordinates (dbCommand);
+			}
+		}
 	}
 }

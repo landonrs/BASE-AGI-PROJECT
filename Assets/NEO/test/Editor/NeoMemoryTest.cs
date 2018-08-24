@@ -33,27 +33,16 @@ public class NeoMemoryTest {
 		LocationData data = new LocationData ("kitchen", 200, 200);
 		neoMemory.MemorizeLocation (data);
 		neoMemory.UpdatePersonLocation ("you", "kitchen");
-		using (IDbConnection dbConnection = new SqliteConnection(TEST_CONNECTION_STRING)) {
-			dbConnection.Open ();
 
-			using (IDbCommand dbCommand = dbConnection.CreateCommand ()) {
-				Assert.AreEqual(1, DBUtils.getId(DBUtils.PERSON_LOCATION, DBUtils.PEOPLE_TABLE, DBUtils.PEOPLE_COL, "you", dbCommand));
-			}
-			dbConnection.Close ();
-		}
+		Assert.AreEqual(1, DBUtils.getId(DBUtils.PERSON_LOCATION, DBUtils.PEOPLE_TABLE, DBUtils.PEOPLE_COL, "you"));
 	}
 
 
 	[Test]
 	public void NeoMemoryMemorizesObjectXAndZPositions() {
 		neoMemory.memorizeObject(apple, "kitchen");
-		using (IDbConnection dbConnection = new SqliteConnection (TEST_CONNECTION_STRING)) {
-			dbConnection.Open ();
-			using (IDbCommand dbCommand = dbConnection.CreateCommand ()) {
-				Assert.AreEqual (DBUtils.getObjectCoordinates ("apple", dbCommand)[0], 200);
-			}
-		}
 
+		Assert.AreEqual (DBUtils.getObjectCoordinates ("apple")[0], 200);
 	}
 
 

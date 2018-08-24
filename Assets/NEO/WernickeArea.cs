@@ -61,25 +61,18 @@ public class WernickeArea {
 		string target = "";
 		Vector2 targetLocation = new Vector2();
 		string[] words = sentence.Split ();
-		using (IDbConnection dbConnection = new SqliteConnection (connectionString)) {
-			dbConnection.Open ();
-
-			using (IDbCommand dbCommand = dbConnection.CreateCommand ()) {
 				foreach (string word in words) {
 					//check if word is an object
 					if(WordIsObject(word)) {
 						target = word;
-						targetLocation = DBUtils.getObjectCoordinates (target, dbCommand);
+						targetLocation = DBUtils.getObjectCoordinates (target);
 					}
 					else if (WordIsLocation (word)) {
-						targetLocation = DBUtils.getLocationCoordinates (word, dbCommand);
+						targetLocation = DBUtils.getLocationCoordinates (word);
 						break;
 					}
 				}
-			}
-		}
 		return targetLocation;
-
 	}
 
 	public string AnalyzeWhereQuery(string sentence) {
@@ -119,15 +112,8 @@ public class WernickeArea {
 	public string DefineObjectLocation(string objectName){
 		int locationId = 0;
 		string locationName = "";
-		using (IDbConnection dbConnection = new SqliteConnection (connectionString)) {
-			dbConnection.Open ();
-
-			using (IDbCommand dbCommand = dbConnection.CreateCommand ()) {
-				locationId = DBUtils.getId (DBUtils.OBJECTS_LOCATION, DBUtils.OBJECTS_TABLE, DBUtils.OBJECTS_COL, objectName, dbCommand);
-				locationName = DBUtils.getValueFromId (locationId, DBUtils.LOCATIONS_ID, DBUtils.LOCATIONS_TABLE, DBUtils.LOCATIONS_COL, dbCommand);
-			}
-			dbConnection.Close ();
-		}
+		locationId = DBUtils.getId (DBUtils.OBJECTS_LOCATION, DBUtils.OBJECTS_TABLE, DBUtils.OBJECTS_COL, objectName);
+		locationName = DBUtils.getValueFromId (locationId, DBUtils.LOCATIONS_ID, DBUtils.LOCATIONS_TABLE, DBUtils.LOCATIONS_COL);
 				
 		return locationName;
 	}
@@ -135,15 +121,8 @@ public class WernickeArea {
 	public string DefinePersonLocation(string personName){
 		int locationId = 0;
 		string locationName = "";
-		using (IDbConnection dbConnection = new SqliteConnection (connectionString)) {
-			dbConnection.Open ();
-
-			using (IDbCommand dbCommand = dbConnection.CreateCommand ()) {
-				locationId = DBUtils.getId (DBUtils.PERSON_LOCATION, DBUtils.PEOPLE_TABLE, DBUtils.PEOPLE_COL, personName, dbCommand);
-				locationName = DBUtils.getValueFromId (locationId, DBUtils.LOCATIONS_ID, DBUtils.LOCATIONS_TABLE, DBUtils.LOCATIONS_COL, dbCommand);
-			}
-			dbConnection.Close ();
-		}
+		locationId = DBUtils.getId (DBUtils.PERSON_LOCATION, DBUtils.PEOPLE_TABLE, DBUtils.PEOPLE_COL, personName);
+		locationName = DBUtils.getValueFromId (locationId, DBUtils.LOCATIONS_ID, DBUtils.LOCATIONS_TABLE, DBUtils.LOCATIONS_COL);
 
 		return locationName;
 	}
@@ -152,16 +131,9 @@ public class WernickeArea {
 		int attributeId = 0;
 		int objectId = 0;
 		List<string> attributeValue = null;
-		using (IDbConnection dbConnection = new SqliteConnection (connectionString)) {
-			dbConnection.Open ();
-
-			using (IDbCommand dbCommand = dbConnection.CreateCommand ()) {
-				attributeId = DBUtils.getId (DBUtils.ATTRIBUTE_ID, DBUtils.ATTRIBUTES_TABLE, DBUtils.ATTRIBUTE_COL, attribute, dbCommand);
-				objectId = DBUtils.getId(DBUtils.OBJECTS_ID, DBUtils.OBJECTS_TABLE, DBUtils.OBJECTS_COL, objectName, dbCommand);
-				attributeValue = DBUtils.getObjectAttribute (objectId, attributeId, dbCommand);
-			}
-			dbConnection.Close ();
-		}
+		attributeId = DBUtils.getId (DBUtils.ATTRIBUTE_ID, DBUtils.ATTRIBUTES_TABLE, DBUtils.ATTRIBUTE_COL, attribute);
+		objectId = DBUtils.getId(DBUtils.OBJECTS_ID, DBUtils.OBJECTS_TABLE, DBUtils.OBJECTS_COL, objectName);
+		attributeValue = DBUtils.getObjectAttribute (objectId, attributeId);
 
 		return attributeValue[0];
 	}
