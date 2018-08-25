@@ -17,7 +17,8 @@ public class NeoMemoryTest {
 	public void SetupNeoMemory(){
 		neoMemory = NeoMemory.getInstance ();
 		TEST_CONNECTION_STRING = "URI=file:" + Application.dataPath + "/test/neo_brain_test.db";
-		neoMemory.setconnectionString(TEST_CONNECTION_STRING);
+		neoMemory.setconnectionString (TEST_CONNECTION_STRING);
+		DBUtils.setConnectionString(TEST_CONNECTION_STRING);
 		apple = new ObjectData("apple", "red", new List<string>(new string[]{"fruit", "food"}), 200, 500);
 	}
 
@@ -33,27 +34,16 @@ public class NeoMemoryTest {
 		LocationData data = new LocationData ("kitchen", 200, 200);
 		neoMemory.MemorizeLocation (data);
 		neoMemory.UpdatePersonLocation ("you", "kitchen");
-		using (IDbConnection dbConnection = new SqliteConnection(TEST_CONNECTION_STRING)) {
-			dbConnection.Open ();
 
-			using (IDbCommand dbCommand = dbConnection.CreateCommand ()) {
-				Assert.AreEqual(1, DBUtils.getId(DBUtils.PERSON_LOCATION, DBUtils.PEOPLE_TABLE, DBUtils.PEOPLE_COL, "you", dbCommand));
-			}
-			dbConnection.Close ();
-		}
+		Assert.AreEqual(1, DBUtils.getId(DBUtils.PERSON_LOCATION, DBUtils.PEOPLE_TABLE, DBUtils.PEOPLE_COL, "you"));
 	}
 
 
 	[Test]
 	public void NeoMemoryMemorizesObjectXAndZPositions() {
 		neoMemory.memorizeObject(apple, "kitchen");
-		using (IDbConnection dbConnection = new SqliteConnection (TEST_CONNECTION_STRING)) {
-			dbConnection.Open ();
-			using (IDbCommand dbCommand = dbConnection.CreateCommand ()) {
-				Assert.AreEqual (DBUtils.getObjectCoordinates ("apple", dbCommand)[0], 200);
-			}
-		}
 
+		Assert.AreEqual (DBUtils.getObjectCoordinates ("apple")[0], 200);
 	}
 
 

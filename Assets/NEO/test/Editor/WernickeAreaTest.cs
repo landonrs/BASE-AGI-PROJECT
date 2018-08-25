@@ -15,7 +15,9 @@ public class WernickeAreaTest {
 	[SetUp]
 	public void setupWernickeArea(){
 		wernickeArea = WernickeArea.getInstance ();
-		wernickeArea.setConnectionString("URI=file:" + Application.dataPath + "/NEO/test/Editor/wernicke_area_test_db.db");
+		string testConnectionString = "URI=file:" + Application.dataPath + "/NEO/test/Editor/wernicke_area_test_db.db";
+		wernickeArea.setConnectionString (testConnectionString);
+		DBUtils.setConnectionString (testConnectionString);
 	}
 
 	[Test]
