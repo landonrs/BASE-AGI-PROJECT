@@ -17,7 +17,8 @@ public class NeoMemoryTest {
 	public void SetupNeoMemory(){
 		neoMemory = NeoMemory.getInstance ();
 		TEST_CONNECTION_STRING = "URI=file:" + Application.dataPath + "/test/neo_brain_test.db";
-		neoMemory.setconnectionString(TEST_CONNECTION_STRING);
+		neoMemory.setconnectionString (TEST_CONNECTION_STRING);
+		DBUtils.setConnectionString(TEST_CONNECTION_STRING);
 		apple = new ObjectData("apple", "red", new List<string>(new string[]{"fruit", "food"}), 200, 500);
 	}
 
