@@ -80,7 +80,7 @@ As of this writing, the Agent’s experience with the environment is stored in a
 The database file is stored internally in the project under the filename “neo_test.db”. 
 This section describes the different tables in the DB and their main purpose.
 
-![alt text](https://github.com/landonrs/BASE-AGI-PROJECT/tree/master/Assets/Documentation/NEO_DB_ERD_v3.png)
+![alt text](Assets/Documentation/NEO_DB_ERD_v3.png)
 
 ### ADJECTIVES – the adjectives tables holds descriptive words of the English language (red, heavy, soft etc.). It is linked to the attributes table through the ADJECTIVE_TYPE table as explained below.
 
