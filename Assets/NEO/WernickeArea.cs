@@ -9,11 +9,9 @@ public class WernickeArea {
 
 	//private static NeoMemory memory;
 	private static WernickeArea instance;
-	private string connectionString;
 	private GameObject Neo;
 
 	private WernickeArea(){ 
-		connectionString = "URI=file:" + Application.dataPath + "/neo_brain.db";
 		Neo = GameObject.FindGameObjectWithTag ("NEO");
 	}
 
@@ -25,12 +23,7 @@ public class WernickeArea {
 		return instance;
 
 	}
-
-	// For Testing
-	public void setConnectionString(string connString) {
-		this.connectionString = connString;
-	}
-
+		
 	public string AnalyzeSentence(string sentence) {
 		string response = "";
 		//string verb = "";
